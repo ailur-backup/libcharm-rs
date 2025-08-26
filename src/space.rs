@@ -1,27 +1,34 @@
-// DISABLED FOR BETA RELEASE, SEE HISTORY.TXT
-/*
+use serde::{Deserialize, Serialize};
+
+use crate::{room::Room, server::Server, user::User};
+
 #[derive(Serialize, Deserialize, Debug, Hash, Clone, PartialEq, Eq)]
 pub struct Config {
     pub space: Space,
+    /*
     pub public: bool,
     pub hierarchy: Vec<Role>,
     pub default: Role,
-    pub members: Vec<Member>,
+    */
+    pub members: Vec<User>,
     pub rooms: Vec<Room>,
+    pub image: String,
 }
 
-#[derive(Serialize, Deserialize, Hash, Eq, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Hash, Clone, PartialEq, Eq)]
 pub struct Space {
     pub name: String,
     pub server: Server,
 }
 
-impl Space {
-    pub fn to_string(&self) -> String {
+impl ToString for Space {
+    fn to_string(&self) -> String {
         format!("{}:{}", self.name, self.server.domain)
     }
+}
 
-    pub fn from_string(string: &str) -> Self {
+impl From<&str> for Space {
+    fn from(string: &str) -> Self {
         let split: Vec<&str> = string.split(':').collect();
         Space {
             name: split[0].to_string(),
@@ -32,6 +39,9 @@ impl Space {
     }
 }
 
+pub type Invite = [u8; 8];
+
+/*
 #[derive(Serialize, Deserialize, Debug, Hash, Clone, PartialEq, Eq)]
 pub enum Permission {
     // Permission to modify rooms (add, remove, change role settings for)

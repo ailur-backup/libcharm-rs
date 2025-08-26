@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 
+use crate::{server::Server, space::Space};
+
 /*
 pub type Permissions = Vec<Permission>;
 pub type RolePermissions = HashMap<Role, Permissions>;
@@ -86,13 +88,10 @@ impl Permission {
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug, Hash, Clone, PartialEq, Eq)]
 pub struct Config {
     pub room: Room,
     pub space_config: space::Config,
-    pub encrypted: bool,
-    pub federated: bool,
-    pub roles: Vec<Role>,
 }
 
 pub struct Role {
@@ -111,16 +110,25 @@ const OWNER_PERMISSIONS: Permissions = vec![
     Permission::ChangeRole,
     Permission::ChangeSettings,
 ];
+*/
 
-impl Room {
-    pub fn to_string(&self) -> String {
+#[derive(Serialize, Deserialize, Debug, Hash, Clone, PartialEq, Eq)]
+pub struct Room {
+    pub name: String,
+    pub space: Space,
+}
+
+impl ToString for Room {
+    fn to_string(&self) -> String {
         format!(
             "#{}:{}:{}",
             self.name, self.space.name, self.space.server.domain
         )
     }
+}
 
-    pub fn from_string(string: &str) -> Self {
+impl From<&str> for Room {
+    fn from(string: &str) -> Self {
         let split: Vec<&str> = string.split(':').collect();
         Room {
             name: split[0].to_string(),
@@ -130,29 +138,6 @@ impl Room {
                     domain: split[2].to_string(),
                 },
             },
-        }
-    }
-}
-*/
-
-
-#[derive(Serialize, Deserialize, Debug, Hash, Clone, PartialEq, Eq)]
-pub struct Room {
-    pub name: String,
-    // DISABLED FOR BETA RELEASE, SEE HISTORY.TXT
-    // pub space: Space,
-}
-
-impl Room {
-    pub fn to_string(&self) -> String {
-        format!("#{}", self.name)
-    }
-
-    pub fn from_string(string: &str) -> Self {
-        Room {
-            name: string.to_string(),
-            // DISABLED FOR BETA RELEASE, SEE HISTORY.TXT
-            // space: Space::from_string(string),
         }
     }
 }

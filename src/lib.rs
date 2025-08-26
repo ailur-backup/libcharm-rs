@@ -6,4 +6,3 @@ pub mod space;
 pub mod user;
 pub mod message;
 pub mod endpoints;
-pub mod error;
