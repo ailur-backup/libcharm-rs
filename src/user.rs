@@ -21,12 +21,14 @@ pub struct User {
     pub server: Server,
 }
 
-impl User {
-    pub fn to_string(&self) -> String {
+impl ToString for User {
+    fn to_string(&self) -> String {
         format!("{}@{}", self.username, self.server.domain)
     }
+}
 
-    pub fn from_string(string: &str) -> Self {
+impl From<&str> for User {
+    fn from(string: &str) -> Self {
         let split: Vec<&str> = string.split('@').collect();
         User {
             username: split[0].to_string(),
