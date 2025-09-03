@@ -29,11 +29,11 @@ impl ToString for Space {
 
 impl From<&str> for Space {
     fn from(string: &str) -> Self {
-        let split: Vec<&str> = string.split(':').collect();
+        let split = string.split_once(":").unwrap();
         Space {
-            name: split[0].to_string(),
+            name: String::from(split.0),
             server: Server {
-                domain: split[1].to_string(),
+                domain: String::from(split.1),
             },
         }
     }
